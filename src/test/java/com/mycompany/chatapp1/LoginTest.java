@@ -38,7 +38,7 @@ public class LoginTest {
                 "+27665256123"
         );
 
-        assertEquals("Registration successful.", result);
+        assertEquals("Username successfully captured.", result);
     }
 
     @Test
