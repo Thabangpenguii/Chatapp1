@@ -41,6 +41,13 @@ public class LoginTest {
     }
 
     @Test
+    public void testInvalidCellPhoneNumber() {
+        Login login = new Login();
+
+        assertFalse(login.checkCellPhoneNumber("0665256123"));
+    }
+
+    @Test
     public void testRegisterUser() {
         Login login = new Login();
 
