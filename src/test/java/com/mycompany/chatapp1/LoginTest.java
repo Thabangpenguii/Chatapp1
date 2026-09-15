@@ -1,7 +1,5 @@
 package com.mycompany.chatapp1;
 
-
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,10 +13,24 @@ public class LoginTest {
     }
 
     @Test
+    public void testInvalidUserName() {
+        Login login = new Login();
+
+        assertFalse(login.checkUserName("username"));
+    }
+
+    @Test
     public void testCheckPasswordComplexity() {
         Login login = new Login();
 
         assertTrue(login.checkPasswordComplexity("Password1!"));
+    }
+
+    @Test
+    public void testInvalidPasswordComplexity() {
+        Login login = new Login();
+
+        assertFalse(login.checkPasswordComplexity("password"));
     }
 
     @Test
