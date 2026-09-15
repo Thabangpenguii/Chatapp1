@@ -7,10 +7,13 @@ public class Login {
     private String registeredCellphone;
     private boolean loginStatus;
 
+    // Checks that the username contains an underscore and is no more than 5 characters.
     public boolean checkUserName(String username) {
         return username.contains("_") && username.length() <= 5;
     }
 
+    // Checks that the password has at least 8 characters, a capital letter,
+    // a number and a special character.
     public boolean checkPasswordComplexity(String password) {
 
         boolean hasCapital = false;
@@ -40,10 +43,12 @@ public class Login {
                 && hasSpecial;
     }
 
+    // Checks that the cellphone number follows the South African international format.
     public boolean checkCellPhoneNumber(String cellphone) {
         return cellphone.matches("^\\+27\\d{9}$");
     }
 
+    // Registers the user after validating the username, password and cellphone number.
     public String registerUser(String username, String password, String cellphone) {
 
         if (!checkUserName(username)) {
@@ -65,6 +70,7 @@ public class Login {
         return "Username successfully captured.";
     }
 
+    // Checks whether the entered username and password match the registered details.
     public boolean loginUser(String username, String password) {
 
         if (username.equals(registeredUsername)
@@ -80,6 +86,7 @@ public class Login {
         return loginStatus;
     }
 
+    // Returns the current login status.
     public boolean returnLoginStatus() {
         return loginStatus;
     }
