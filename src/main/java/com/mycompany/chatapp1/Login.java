@@ -5,7 +5,15 @@ public class Login {
     private String registeredUsername;
     private String registeredPassword;
     private String registeredCellphone;
+    private String firstName;
+    private String lastName;
     private boolean loginStatus;
+
+    // Constructor for the user's first name and last name.
+    public Login(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     // Checks that the username contains an underscore and is no more than 5 characters.
     public boolean checkUserName(String username) {
@@ -86,8 +94,14 @@ public class Login {
         return loginStatus;
     }
 
-    // Returns the current login status.
-    public boolean returnLoginStatus() {
-        return loginStatus;
+    // Returns the appropriate message based on the login status.
+    public String returnLoginStatus() {
+
+        if (loginStatus) {
+            return "Welcome " + firstName + " " + lastName
+                    + ", it is great to see you again.";
+        } else {
+            return "Username or password incorrect, please try again.";
+        }
     }
 }

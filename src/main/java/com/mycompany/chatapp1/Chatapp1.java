@@ -1,4 +1,5 @@
 package com.mycompany.chatapp1;
+
 import java.util.Scanner;
 
 public class Chatapp1 {
@@ -7,10 +8,16 @@ public class Chatapp1 {
 
         Scanner input = new Scanner(System.in);
 
-        Login login = new Login();
-
         // Registration
         System.out.println("=== Chat App Registration ===");
+
+        System.out.print("Enter first name: ");
+        String firstName = input.nextLine();
+
+        System.out.print("Enter last name: ");
+        String lastName = input.nextLine();
+
+        Login login = new Login(firstName, lastName);
 
         System.out.print("Enter username: ");
         String username = input.nextLine();
@@ -41,11 +48,8 @@ public class Chatapp1 {
 
         System.out.println("Login status: " + loginResult);
 
-        if (loginResult) {
-            System.out.println("Welcome to the Chat App!");
-        } else {
-            System.out.println("Username or password is incorrect.");
-        }
+        // Display login message
+        System.out.println(login.returnLoginStatus());
 
         input.close();
     }
