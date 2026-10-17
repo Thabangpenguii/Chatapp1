@@ -1,3 +1,4 @@
+
 package com.mycompany.chatapp1;
 
 import java.util.Scanner;
@@ -47,9 +48,79 @@ public class Chatapp1 {
                 login.loginUser(loginUsername, loginPassword);
 
         System.out.println("Login status: " + loginResult);
-
-        // Display login message
         System.out.println(login.returnLoginStatus());
+
+        // Messaging menu appears only after successful login
+        if (loginResult) {
+
+            Message message = new Message();
+            boolean running = true;
+
+            while (running) {
+                System.out.println("\n=== Messaging Menu ===");
+                System.out.println("1. Send a message");
+                System.out.println("2. View total messages sent");
+                System.out.println("3. Exit");
+                System.out.print("Choose an option: ");
+
+                String choice = input.nextLine();
+
+                switch (choice) {
+                    case "1":
+                        System.out.print("Enter recipient cellphone (+27...): ");
+                        String recipient = input.nextLine();
+
+                        System.out.print("Enter your message (maximum 250 characters): ");
+                        String text = input.nextLine();
+
+                        if (!message.checkRecipientCell(recipient)) {
+                            System.out.println(
+                                    "Invalid recipient cellphone number.");
+                            break;
+                        }
+
+                        if (!message.checkMessageLength(text)) {
+                            System.out.println(
+                                    "Message exceeds 250 characters.");
+                            break;
+                        }
+
+                        String id = message.generateMessageID();
+                        message.setMessageDetails(recipient, text);
+
+                        String hash = message.createMessageHash(
+                                id, message.returnTotalMessages() + 1, text);
+
+                        System.out.println("Message ID: " + id);
+                        System.out.println("Message Hash: " + hash);
+
+                        System.out.println("Choose: send, discard, or store");
+                        String action = input.nextLine();
+
+                        System.out.println(message.sendMessage(action));
+
+                        if ("send".equalsIgnoreCase(action)) {
+                            System.out.println(message.printMessages());
+                        }
+                        break;
+
+                    case "2":
+                        System.out.println(
+                                "Total messages sent: "
+                                + message.returnTotalMessages());
+                        break;
+
+                    case "3":
+                        running = false;
+                        System.out.println("Exiting Chat App.");
+                        break;
+
+                    default:
+                        System.out.println(
+                                "Invalid option. Please try again.");
+                }
+            }
+        }
 
         input.close();
     }
