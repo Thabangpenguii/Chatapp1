@@ -2,6 +2,10 @@
 package com.mycompany.chatapp1;
 
 import java.util.Random;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Message {
 
@@ -13,72 +17,57 @@ public class Message {
 
     private static int totalMessages = 0;
 
-    // Generates a message ID of no more than 10 digits.
     public String generateMessageID() {
         Random random = new Random();
-
         messageID = String.valueOf(
-                100000000L + random.nextInt(900000000)
-        );
-
+                100000000L + random.nextInt(900000000));
         return messageID;
     }
 
-    // Checks whether the message ID is no longer than 10 characters.
     public boolean checkMessageID(String id) {
         return id != null && id.length() <= 10;
     }
 
-    // Checks the recipient's South African international cellphone number.
     public boolean checkRecipientCell(String cell) {
         return cell != null && cell.matches("\\+27\\d{9}");
     }
 
-    // Checks whether a message is 250 characters or fewer.
     public boolean checkMessageLength(String text) {
         return text != null && text.length() <= 250;
     }
 
-    // Creates a message hash.
     public String createMessageHash(
             String id, int count, String text) {
 
-        if (id == null || text == null || text.trim().isEmpty()) {
+        if (id == null || text == null
+                || text.trim().isEmpty()) {
             return "";
         }
 
         String[] words = text.trim().split("\\s+");
-
         String firstWord = words[0];
         String lastWord = words[words.length - 1];
+        String firstTwoID =
+                id.substring(0, Math.min(2, id.length()));
 
-        String firstTwoID = id.substring(
-                0, Math.min(2, id.length()));
-
-        messageHash = (firstTwoID + ":"
-                + count + ":"
+        messageHash = (firstTwoID + ":" + count + ":"
                 + firstWord + lastWord).toUpperCase();
 
         return messageHash;
     }
 
-    // Sets the message details.
     public void setMessageDetails(
             String recipient, String message) {
-
         this.recipient = recipient;
         this.message = message;
     }
 
-    // Allows the user to send, discard, or store a message.
     public String sendMessage(String choice) {
-
         if (choice == null) {
             return "Invalid choice.";
         }
 
         switch (choice.toLowerCase()) {
-
             case "send":
                 sendStatus = "Sent";
                 totalMessages++;
@@ -97,12 +86,75 @@ public class Message {
         }
     }
 
-    // Returns the total number of messages sent.
+    // Saves this message to messages.json.
+    public String storeMessageAsJson() {
+        if (messageID == null || recipient == null
+                || message == null || messageHash == null
+                || sendStatus == null) {
+            return "Message details are incomplete.";
+        }
+
+        Path file = Path.of("messages.json");
+
+        try {
+            String object = "{"
+                    + "\"messageID\":\"" + escapeJson(messageID) + "\","
+                    + "\"messageHash\":\"" + escapeJson(messageHash) + "\","
+                    + "\"recipient\":\"" + escapeJson(recipient) + "\","
+                    + "\"message\":\"" + escapeJson(message) + "\","
+                    + "\"status\":\"" + escapeJson(sendStatus) + "\""
+                    + "}";
+
+            String existing = "[]";
+
+            if (Files.exists(file)) {
+                existing = Files.readString(
+                        file, StandardCharsets.UTF_8).trim();
+
+                if (existing.isEmpty()) {
+                    existing = "[]";
+                }
+            }
+
+            if (!existing.startsWith("[")
+                    || !existing.endsWith("]")) {
+                return "Could not store message: JSON file is invalid.";
+            }
+
+            String contents;
+
+            if (existing.equals("[]")) {
+                contents = "[" + object + "]";
+            } else {
+                String inside =
+                        existing.substring(1, existing.length() - 1).trim();
+
+                contents = "[" + inside + "," + object + "]";
+            }
+
+            Files.writeString(
+                    file, contents, StandardCharsets.UTF_8);
+
+            return "Message saved to messages.json.";
+
+        } catch (IOException e) {
+            return "Could not store message: " + e.getMessage();
+        }
+    }
+
+    // Escapes special characters so the output remains valid JSON.
+    private String escapeJson(String value) {
+        return value.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
+    }
+
     public int returnTotalMessages() {
         return totalMessages;
     }
 
-    // Displays the message details.
     public String printMessages() {
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash

@@ -97,11 +97,17 @@ public class Chatapp1 {
                         System.out.println("Choose: send, discard, or store");
                         String action = input.nextLine();
 
-                        System.out.println(message.sendMessage(action));
+                    
+System.out.println(message.sendMessage(action));
 
-                        if ("send".equalsIgnoreCase(action)) {
-                            System.out.println(message.printMessages());
-                        }
+if ("send".equalsIgnoreCase(action)) {
+    System.out.println(message.printMessages());
+}
+
+if ("store".equalsIgnoreCase(action)) {
+    System.out.println(message.storeMessageAsJson());
+}
+
                         break;
 
                     case "2":
