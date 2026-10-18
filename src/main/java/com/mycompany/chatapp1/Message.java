@@ -1,11 +1,13 @@
 
 package com.mycompany.chatapp1;
 
-import java.util.Random;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Message {
 
@@ -16,39 +18,55 @@ public class Message {
     private String sendStatus;
 
     private static int totalMessages = 0;
+    private static final Set<String> USED_IDS = new HashSet<>();
 
+    // Generates a unique 10-digit message ID.
     public String generateMessageID() {
-        Random random = new Random();
-        messageID = String.valueOf(
-                100000000L + random.nextInt(900000000));
+        String id;
+
+        do {
+            long number = ThreadLocalRandom.current()
+                    .nextLong(1_000_000_000L, 10_000_000_000L);
+            id = String.valueOf(number);
+        } while (USED_IDS.contains(id));
+
+        USED_IDS.add(id);
+        messageID = id;
+
         return messageID;
     }
 
+    // Checks that the message ID contains exactly 10 digits.
     public boolean checkMessageID(String id) {
-        return id != null && id.length() <= 10;
+        return id != null && id.matches("\\d{10}");
     }
 
+    // Validates the South African recipient cellphone number.
     public boolean checkRecipientCell(String cell) {
         return cell != null && cell.matches("\\+27\\d{9}");
     }
 
+    // Accepts messages shorter than 250 characters.
     public boolean checkMessageLength(String text) {
-        return text != null && text.length() <= 250;
+        return text != null && text.length() < 250;
     }
 
+    // Creates the message hash using the first two ID digits,
+    // message number, first word and last word.
     public String createMessageHash(
             String id, int count, String text) {
 
-        if (id == null || text == null
+        if (!checkMessageID(id)
+                || text == null
                 || text.trim().isEmpty()) {
             return "";
         }
 
         String[] words = text.trim().split("\\s+");
+
         String firstWord = words[0];
         String lastWord = words[words.length - 1];
-        String firstTwoID =
-                id.substring(0, Math.min(2, id.length()));
+        String firstTwoID = id.substring(0, 2);
 
         messageHash = (firstTwoID + ":" + count + ":"
                 + firstWord + lastWord).toUpperCase();
@@ -56,18 +74,22 @@ public class Message {
         return messageHash;
     }
 
+    // Stores the recipient and message text.
     public void setMessageDetails(
             String recipient, String message) {
         this.recipient = recipient;
         this.message = message;
     }
 
+    // Sends, discards or stores a message.
     public String sendMessage(String choice) {
+
         if (choice == null) {
             return "Invalid choice.";
         }
 
-        switch (choice.toLowerCase()) {
+        switch (choice.trim().toLowerCase()) {
+
             case "send":
                 sendStatus = "Sent";
                 totalMessages++;
@@ -86,8 +108,9 @@ public class Message {
         }
     }
 
-    // Saves this message to messages.json.
+    // Saves the message details to messages.json.
     public String storeMessageAsJson() {
+
         if (messageID == null || recipient == null
                 || message == null || messageHash == null
                 || sendStatus == null) {
@@ -126,14 +149,13 @@ public class Message {
             if (existing.equals("[]")) {
                 contents = "[" + object + "]";
             } else {
-                String inside =
-                        existing.substring(1, existing.length() - 1).trim();
+                String inside = existing.substring(
+                        1, existing.length() - 1).trim();
 
                 contents = "[" + inside + "," + object + "]";
             }
 
-            Files.writeString(
-                    file, contents, StandardCharsets.UTF_8);
+            Files.writeString(file, contents, StandardCharsets.UTF_8);
 
             return "Message saved to messages.json.";
 
@@ -142,7 +164,7 @@ public class Message {
         }
     }
 
-    // Escapes special characters so the output remains valid JSON.
+    // Escapes special characters for JSON.
     private String escapeJson(String value) {
         return value.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
@@ -151,10 +173,12 @@ public class Message {
                 .replace("\t", "\\t");
     }
 
+    // Returns the total number of messages sent.
     public int returnTotalMessages() {
         return totalMessages;
     }
 
+    // Displays the current message details.
     public String printMessages() {
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash

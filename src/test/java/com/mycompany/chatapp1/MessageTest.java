@@ -1,7 +1,6 @@
 
 package com.mycompany.chatapp1;
 
-import com.mycompany.chatapp1.Message;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +13,8 @@ public class MessageTest {
         String id = message.generateMessageID();
 
         assertNotNull(id);
-        assertTrue(id.matches("\\d{9}"),
-                "Message ID must contain 9 digits.");
+        assertTrue(id.matches("\\d{10}"),
+                "Message ID must contain 10 digits.");
         assertTrue(message.checkMessageID(id));
     }
 
@@ -23,7 +22,7 @@ public class MessageTest {
     public void testCheckMessageID() {
         Message message = new Message();
 
-        assertTrue(message.checkMessageID("123456789"));
+        assertFalse(message.checkMessageID("123456789"));
         assertTrue(message.checkMessageID("1234567890"));
         assertFalse(message.checkMessageID("12345678901"));
     }
@@ -42,12 +41,12 @@ public class MessageTest {
         Message message = new Message();
 
         String validMessage = "Hello";
-        String maximumMessage = "a".repeat(250);
-        String longMessage = "a".repeat(251);
+        String maximumAllowedMessage = "a".repeat(249);
+        String tooLongMessage = "a".repeat(250);
 
         assertTrue(message.checkMessageLength(validMessage));
-        assertTrue(message.checkMessageLength(maximumMessage));
-        assertFalse(message.checkMessageLength(longMessage));
+        assertTrue(message.checkMessageLength(maximumAllowedMessage));
+        assertFalse(message.checkMessageLength(tooLongMessage));
     }
 
     @Test
@@ -55,7 +54,7 @@ public class MessageTest {
         Message message = new Message();
 
         String hash = message.createMessageHash(
-                "123456789", 1,
+                "1234567890", 1,
                 "Hi Mike, can you join us for dinner tonight?");
 
         assertEquals("12:1:HITONIGHT?", hash);

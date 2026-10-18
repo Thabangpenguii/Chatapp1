@@ -50,13 +50,14 @@ public class Chatapp1 {
         System.out.println("Login status: " + loginResult);
         System.out.println(login.returnLoginStatus());
 
-        // Messaging menu appears only after successful login
+        // Display messaging menu only after successful login
         if (loginResult) {
 
             Message message = new Message();
             boolean running = true;
 
             while (running) {
+
                 System.out.println("\n=== Messaging Menu ===");
                 System.out.println("1. Send a message");
                 System.out.println("2. View total messages sent");
@@ -66,47 +67,64 @@ public class Chatapp1 {
                 String choice = input.nextLine();
 
                 switch (choice) {
+
                     case "1":
-                        System.out.print("Enter recipient cellphone (+27...): ");
+                        System.out.print(
+                                "Enter recipient cellphone (+27...): ");
                         String recipient = input.nextLine();
 
-                        System.out.print("Enter your message (maximum 250 characters): ");
+                        System.out.print(
+                                "Enter your message (maximum 250 characters): ");
                         String text = input.nextLine();
 
+                        // Validate recipient cellphone
                         if (!message.checkRecipientCell(recipient)) {
                             System.out.println(
                                     "Invalid recipient cellphone number.");
                             break;
                         }
 
+                        // Validate message length
                         if (!message.checkMessageLength(text)) {
                             System.out.println(
-                                    "Message exceeds 250 characters.");
+                                    "Please enter a message of less than 250 characters.");
                             break;
                         }
 
+                        // Generate message ID
                         String id = message.generateMessageID();
+
+                        // Store message details
                         message.setMessageDetails(recipient, text);
 
+                        // Generate message hash
                         String hash = message.createMessageHash(
-                                id, message.returnTotalMessages() + 1, text);
+                                id,
+                                message.returnTotalMessages() + 1,
+                                text
+                        );
 
                         System.out.println("Message ID: " + id);
                         System.out.println("Message Hash: " + hash);
 
-                        System.out.println("Choose: send, discard, or store");
+                        // Choose what to do with the message
+                        System.out.println(
+                                "Choose: send, discard, or store");
                         String action = input.nextLine();
 
-                    
-System.out.println(message.sendMessage(action));
+                        System.out.println(
+                                message.sendMessage(action));
 
-if ("send".equalsIgnoreCase(action)) {
-    System.out.println(message.printMessages());
-}
+                        // Display sent messages
+                        if ("send".equalsIgnoreCase(action)) {
+                            System.out.println(message.printMessages());
+                        }
 
-if ("store".equalsIgnoreCase(action)) {
-    System.out.println(message.storeMessageAsJson());
-}
+                        // Store message as JSON
+                        if ("store".equalsIgnoreCase(action)) {
+                            System.out.println(
+                                    message.storeMessageAsJson());
+                        }
 
                         break;
 
@@ -131,3 +149,4 @@ if ("store".equalsIgnoreCase(action)) {
         input.close();
     }
 }
+

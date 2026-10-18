@@ -1,3 +1,4 @@
+
 package com.mycompany.chatapp1;
 
 public class Login {
@@ -13,23 +14,30 @@ public class Login {
     public Login(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.loginStatus = false;
     }
 
-    // Checks that the username contains an underscore and is no more than 5 characters.
+    // Checks that the username contains an underscore
+    // and is no more than five characters long.
     public boolean checkUserName(String username) {
-        return username.contains("_") && username.length() <= 5;
+        return username != null
+                && username.contains("_")
+                && username.length() <= 5;
     }
 
-    // Checks that the password has at least 8 characters, a capital letter,
-    // a number and a special character.
+    // Checks that the password has at least eight characters,
+    // a capital letter, a number and a special character.
     public boolean checkPasswordComplexity(String password) {
+
+        if (password == null) {
+            return false;
+        }
 
         boolean hasCapital = false;
         boolean hasNumber = false;
         boolean hasSpecial = false;
 
         for (int i = 0; i < password.length(); i++) {
-
             char c = password.charAt(i);
 
             if (Character.isUpperCase(c)) {
@@ -51,13 +59,16 @@ public class Login {
                 && hasSpecial;
     }
 
-    // Checks that the cellphone number follows the South African international format.
+    // Checks that the cellphone number follows
+    // the South African international format.
     public boolean checkCellPhoneNumber(String cellphone) {
-        return cellphone.matches("^\\+27\\d{9}$");
+        return cellphone != null
+                && cellphone.matches("^\\+27\\d{9}$");
     }
 
-    // Registers the user after validating the username, password and cellphone number.
-    public String registerUser(String username, String password, String cellphone) {
+    // Registers the user after validating all details.
+    public String registerUser(
+            String username, String password, String cellphone) {
 
         if (!checkUserName(username)) {
             return "Username is not correctly formatted; please ensure that your username contains an underscore and is no more than five characters in length.";
@@ -78,23 +89,19 @@ public class Login {
         return "Username successfully captured.";
     }
 
-    // Checks whether the entered username and password match the registered details.
+    // Checks whether the entered username and password
+    // match the registered details.
     public boolean loginUser(String username, String password) {
 
-        if (username.equals(registeredUsername)
-                && password.equals(registeredPassword)) {
-
-            loginStatus = true;
-
-        } else {
-
-            loginStatus = false;
-        }
+        loginStatus = username != null
+                && password != null
+                && username.equals(registeredUsername)
+                && password.equals(registeredPassword);
 
         return loginStatus;
     }
 
-    // Returns the appropriate message based on the login status.
+    // Returns a message based on the login status.
     public String returnLoginStatus() {
 
         if (loginStatus) {
