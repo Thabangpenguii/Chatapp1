@@ -1,6 +1,7 @@
 
 package com.mycompany.chatapp1;
 
+import java.util.ArrayList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +20,22 @@ public class Message {
 
     private static int totalMessages = 0;
     private static final Set<String> USED_IDS = new HashSet<>();
+
+    // Part 3 Arrays
+    private static ArrayList<String> sentMessages =
+            new ArrayList<>();
+
+    private static ArrayList<String> disregardedMessages =
+            new ArrayList<>();
+
+    private static ArrayList<String> storedMessages =
+            new ArrayList<>();
+
+    private static ArrayList<String> messageHashes =
+            new ArrayList<>();
+
+    private static ArrayList<String> messageIDs =
+            new ArrayList<>();
 
     // Generates a unique 10-digit message ID.
     public String generateMessageID() {
@@ -51,8 +68,7 @@ public class Message {
         return text != null && text.length() < 250;
     }
 
-    // Creates the message hash using the first two ID digits,
-    // message number, first word and last word.
+    // Creates the message hash.
     public String createMessageHash(
             String id, int count, String text) {
 
@@ -77,6 +93,7 @@ public class Message {
     // Stores the recipient and message text.
     public void setMessageDetails(
             String recipient, String message) {
+
         this.recipient = recipient;
         this.message = message;
     }
@@ -93,14 +110,28 @@ public class Message {
             case "send":
                 sendStatus = "Sent";
                 totalMessages++;
+
+                sentMessages.add(message);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 return "Message successfully sent.";
 
             case "discard":
                 sendStatus = "Discarded";
+
+                disregardedMessages.add(message);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 return "Message discarded.";
 
             case "store":
                 sendStatus = "Stored";
+
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 return "Message stored for later.";
 
             default:
@@ -114,12 +145,14 @@ public class Message {
         if (messageID == null || recipient == null
                 || message == null || messageHash == null
                 || sendStatus == null) {
+
             return "Message details are incomplete.";
         }
 
         Path file = Path.of("messages.json");
 
         try {
+
             String object = "{"
                     + "\"messageID\":\"" + escapeJson(messageID) + "\","
                     + "\"messageHash\":\"" + escapeJson(messageHash) + "\","
@@ -131,6 +164,7 @@ public class Message {
             String existing = "[]";
 
             if (Files.exists(file)) {
+
                 existing = Files.readString(
                         file, StandardCharsets.UTF_8).trim();
 
@@ -141,31 +175,38 @@ public class Message {
 
             if (!existing.startsWith("[")
                     || !existing.endsWith("]")) {
+
                 return "Could not store message: JSON file is invalid.";
             }
 
             String contents;
 
             if (existing.equals("[]")) {
+
                 contents = "[" + object + "]";
+
             } else {
+
                 String inside = existing.substring(
                         1, existing.length() - 1).trim();
 
                 contents = "[" + inside + "," + object + "]";
             }
 
-            Files.writeString(file, contents, StandardCharsets.UTF_8);
+            Files.writeString(
+                    file, contents, StandardCharsets.UTF_8);
 
             return "Message saved to messages.json.";
 
         } catch (IOException e) {
+
             return "Could not store message: " + e.getMessage();
         }
     }
 
     // Escapes special characters for JSON.
     private String escapeJson(String value) {
+
         return value.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
@@ -180,12 +221,37 @@ public class Message {
 
     // Displays the current message details.
     public String printMessages() {
+
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
                 + "\nRecipient: " + recipient
                 + "\nMessage: " + message
                 + "\nStatus: " + sendStatus;
     }
+
+    // Part 3 Array Getter Methods
+
+    public static ArrayList<String> getSentMessages() {
+        return sentMessages;
+    }
+
+    public static ArrayList<String> getDisregardedMessages() {
+        return disregardedMessages;
+    }
+
+    public static ArrayList<String> getStoredMessages() {
+        return storedMessages;
+    }
+
+    public static ArrayList<String> getMessageHashes() {
+        return messageHashes;
+    }
+
+    public static ArrayList<String> getMessageIDs() {
+        return messageIDs;
+    }
+
+    // Existing getter methods
 
     public String getMessageID() {
         return messageID;
