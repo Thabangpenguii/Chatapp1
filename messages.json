@@ -1,1 +1,53 @@
-[{"messageID":"368247755","messageHash":"36:1:IYOU","recipient":"+27665256123","message":"i love you","status":"Stored"},{"messageID":"273337050","messageHash":"27:1:IU","recipient":"+27665256123","message":"i love u","status":"Stored"},{"messageID":"282095530","messageHash":"28:1:THISMESSAGE","recipient":"+27665256123","message":"This is my test message","status":"Stored"},{"messageID":"597385360","messageHash":"59:1:THISMESSAGE","recipient":"+27665256123","message":"This is my test message","status":"Stored"},{"messageID":"4991574697","messageHash":"49:1:HELLOKENA","recipient":"+27665256123","message":"hello my name is kena ","status":"Stored"}]
+[
+  {
+    "messageID": "368247755",
+    "messageHash": "36:1:IYOU",
+    "recipient": "+27665256123",
+    "message": "i love you",
+    "status": "Stored"
+  },
+  {
+    "messageID": "273337050",
+    "messageHash": "27:1:IU",
+    "recipient": "+27665256123",
+    "message": "i love u",
+    "status": "Stored"
+  },
+  {
+    "messageID": "597385360",
+    "messageHash": "59:1:THISMESSAGE",
+    "recipient": "+27665256123",
+    "message": "This is my test message",
+    "status": "Stored"
+  },
+  {
+    "messageID": "4991574697",
+    "messageHash": "49:1:HELLOKENA",
+    "recipient": "+27665256123",
+    "message": "hello my name is kena ",
+    "status": "Stored"
+  },
+  {
+    "messageID": "3094172334",
+    "messageHash": "30:1:HELLOTHABANG",
+    "recipient": "+27665256123",
+    "message": "hello thabang",
+    "status": "Stored"
+  },
+  {
+    "messageID": "3442082623",
+    "messageHash": "34:1:PARTTEST",
+    "sender": "Thabang Moukangwe",
+    "recipient": "+27665256123",
+    "message": "Part 3 storage test",
+    "status": "Stored"
+  },
+  {
+    "messageID": "1722340145",
+    "messageHash": "17:1:DIDCAKE?",
+    "sender": "Thabang Moukangwe",
+    "recipient": "+27834557896",
+    "message": "Did u get the cake?",
+    "status": "Stored"
+  }
+]
